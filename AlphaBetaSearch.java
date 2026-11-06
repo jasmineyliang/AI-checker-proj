@@ -8,7 +8,7 @@ package project;
 
 
 public class AlphaBetaSearch {
-	
+
 	private CheckersData board;
 	// An instance of this class will be created in the Checkers.Board
 	// It would be better to keep the default constructor.
@@ -34,75 +34,64 @@ public class AlphaBetaSearch {
 	 * @param legalMoves All the legal moves for the agent at current step.
 	 */
 	public CheckersMove makeMove(CheckersMove[] legalMoves) {
-		CheckersData future = new CheckersData();
-		CheckersData current = new CheckersData();
 		CheckersMove result = null;
-
 		double score = -999999;
 
 		for (int i = 0; i < legalMoves.length; i++) {
-			future = current;
+			CheckersData future = new CheckersData(this.board);
 			future.makeMove(legalMoves[i]);
 			double value = maxValue(future, 1, -99999, 99999, 10);
 
 			if (value > score) {
 				result = legalMoves[i];
 				score = value;
-				future = null;
 			}
-
-			future = null;
 		}
 		return result;
 	}
-	
-	
-	
-	
-	public double maxValue(CheckersData state, int player, double alpha, double beta, int depth) {
-		CheckersData future = new CheckersData();
-		CheckersData current = new CheckersData();
-		if (depth == 0) {
-			return (future.howmany(3) - future.howmany(1));
-		}
-		double value = -99999;
-		int legalLength = state.getLegalMoves(3).length;
 
-		for (int i = 0; i < legalLength; i++) {
-			future = current;
-			future.makeMove(state.getLegalMoves(3)[i]);
-			
-			value = minValue(future, player, alpha, beta, depth - 1);
+
+
+
+	public double maxValue(CheckersData state, int player, double alpha, double beta, int depth) {
+		if (depth == 0) {
+			return (state.howmany(3) - state.howmany(1));
+		}
+		CheckersMove[] moves = state.getLegalMoves(3);
+		if (moves == null) {
+			return (state.howmany(3) - state.howmany(1));
+		}
+
+		for (int i = 0; i < moves.length; i++) {
+			CheckersData future = new CheckersData(state);
+			future.makeMove(moves[i]);
+
+			double value = minValue(future, player, alpha, beta, depth - 1);
 			if (value >= beta)
 				return beta;
 			if (value >= alpha)
 				alpha = value;
-			future = null;
-
 		}
 		return alpha;
 	}
 
 	public double minValue(CheckersData state, int player, double alpha, double beta, int depth) {
-		CheckersData future = new CheckersData();
-		CheckersData current = new CheckersData();
 		if (depth == 0) {
-			return (future.howmany(3) - future.howmany(1));
+			return (state.howmany(3) - state.howmany(1));
 		}
+		CheckersMove[] moves = state.getLegalMoves(1);
+		if (moves == null) {
+			return (state.howmany(3) - state.howmany(1));
+		}
+		for (int i = 0; i < moves.length; i++) {
+			CheckersData future = new CheckersData(state);
+			future.makeMove(moves[i]);
 
-		double value = 99999;
-		int legalLength = state.getLegalMoves(1).length;
-		for (int i = 0; i < legalLength; i++) {
-			future = current;
-			future.makeMove(state.getLegalMoves(1)[i]);
-
-			
-			value = maxValue(future, player, alpha, beta, depth - 1);
+			double value = maxValue(future, player, alpha, beta, depth - 1);
 			if (value <= alpha)
 				return alpha;
 			if (value < beta)
 				beta = value;
-			future = null;
 		}
 		return beta;
 	}

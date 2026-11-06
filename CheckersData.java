@@ -39,7 +39,10 @@ public class CheckersData {
 	 * make a deep copy
 	 */
 	public CheckersData(CheckersData old) {
-		this.board = old.board;
+		this.board = new int[8][8];
+		for (int i = 0; i < 8; i++) {
+			this.board[i] = old.board[i].clone();
+		}
 	}
 
 	/**
@@ -56,12 +59,11 @@ public class CheckersData {
 		if (player == 1) {
 			for (int i = 0; i < board.length; i++) {
 				for (int j = 0; j < board[1].length; j++) {
-					if (board[i][j] == 1||board[i][j] == 2) {
+					if (board[i][j] == 1 || board[i][j] == 2) {
 						howmany++;
-					}
-					
-					else if (board[i][j] == 2) {
-						king++;
+						if (board[i][j] == 2) {
+							king++;
+						}
 					}
 				}
 
@@ -71,12 +73,11 @@ public class CheckersData {
 		else if (player == 3) {
 			for (int i = 0; i < board.length; i++) {
 				for (int j = 0; j < board[1].length; j++) {
-					if (board[i][j] == 3||board[i][j] == 4) {
+					if (board[i][j] == 3 || board[i][j] == 4) {
 						howmany++;
-					}
-					
-					else if (board[i][j] == 4) {
-						king++;
+						if (board[i][j] == 4) {
+							king++;
+						}
 					}
 				}
 
